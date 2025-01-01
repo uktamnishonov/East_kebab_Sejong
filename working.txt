@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Income & Inventory Dashboard</title>
     <style>
-        /* Global Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            box-sizing: border-box;
         }
 
         header {
@@ -24,17 +22,14 @@
         nav {
             background-color: #444;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
         }
 
         nav a {
             color: white;
             padding: 14px 20px;
+            display: inline-block;
             text-decoration: none;
             text-align: center;
-            transition: background-color 0.3s;
         }
 
         nav a:hover {
@@ -44,23 +39,12 @@
 
         .container {
             padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .active-tab {
-            display: block;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            overflow-x: auto;
         }
 
         th, td {
@@ -79,48 +63,17 @@
             margin-top: 20px;
         }
 
+        .tab-content {
+            display: none;
+        }
+
+        .active-tab {
+            display: block;
+        }
+
         .error-message {
             color: red;
             text-align: center;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-            }
-
-            nav a {
-                padding: 12px;
-                width: 100%;
-                text-align: left;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            th, td {
-                padding: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header h1 {
-                font-size: 20px;
-            }
-
-            nav a {
-                font-size: 14px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            .loading {
-                font-size: 16px;
-            }
         }
     </style>
 </head>
