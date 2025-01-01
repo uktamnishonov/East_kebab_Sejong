@@ -4,101 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Income & Inventory Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f4f4f4;
         }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fc;
-            color: #333;
-        }
+
         header {
-            background-color: #2c3e50;
+            background-color: #333;
             color: white;
-            padding: 20px 0;
+            padding: 15px 0;
             text-align: center;
-            font-size: 2em;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         nav {
-            background-color: #34495e;
-            display: flex;
-            justify-content: center;
-            padding: 10px 0;
+            background-color: #444;
+            overflow: hidden;
         }
+
         nav a {
             color: white;
             padding: 14px 20px;
+            display: inline-block;
             text-decoration: none;
             text-align: center;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
         }
+
         nav a:hover {
-            background-color: #2980b9;
+            background-color: #ddd;
+            color: black;
         }
+
         .container {
             padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
         }
-        .tab-content {
-            display: none;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        .active-tab {
-            display: block;
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
         }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
         .loading {
             text-align: center;
             font-size: 18px;
             margin-top: 20px;
-            color: #7f8c8d;
         }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        .tab-content {
+            display: none;
         }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border: 1px solid #ddd;
+
+        .active-tab {
+            display: block;
         }
-        th {
-            background-color: #34495e;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #ecf0f1;
-        }
+
         .error-message {
             color: red;
             text-align: center;
-            margin-top: 20px;
-        }
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
         }
     </style>
 </head>
 <body>
 
 <header>
-    Income & Inventory Dashboard
+    <h1>Income & Inventory Dashboard</h1>
 </header>
 
 <nav>
@@ -129,17 +111,8 @@
     <div class="error-message" id="error-message"></div>
 </div>
 
-<footer>
-    &copy; 2025 Income & Inventory Dashboard. All rights reserved.
-</footer>
-
 <script>
-    // Change these URLs to your deployed Apps Script URL with the correct sheet names
-    const sheetUrls = {
-        inventory: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Inventory',
-        log: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Log',
-        income: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Income'
-    };
+    const baseUrl = 'https://script.google.com/macros/s/AKfycbyRZz1HLg0maMFHfaeW7qEX1mVUoVVgH05Q51q7xh7Aq59nZqYxGwWZZLumuk2CmkAW/exec?sheet=';
 
     function showTab(tabName) {
         const tabs = document.querySelectorAll('.tab-content');
@@ -160,7 +133,7 @@
         errorMessage.innerHTML = '';  // Clear previous error messages
         table.innerHTML = '';  // Clear previous table data
 
-        fetch(sheetUrls[sheetName])
+        fetch(baseUrl + sheetName)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
