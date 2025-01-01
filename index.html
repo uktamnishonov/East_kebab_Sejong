@@ -113,9 +113,9 @@
 
 <script>
     const sheetUrls = {
-        inventory: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od6/public/values?alt=json",
-        log: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od7/public/values?alt=json",
-        income: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od8/public/values?alt=json"
+        inventory: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Inventory",
+        log: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Log",
+        income: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Income"
     };
 
     function showTab(tabName) {
@@ -147,25 +147,22 @@
             .then(data => {
                 loadingMessage.style.display = 'none'; // Hide loading message
 
-                if (data.feed.entry.length === 0) {
+                if (data.length === 0) {
                     table.innerHTML = '<tr><td colspan="5">No data available.</td></tr>';
                     return;
                 }
 
-                const entries = data.feed.entry;
-                const headers = Object.keys(entries[0]);
-
                 let headerRow = '<tr>';
-                headers.forEach(header => {
+                Object.keys(data[0]).forEach(header => {
                     headerRow += `<th>${header}</th>`;
                 });
                 headerRow += '</tr>';
                 table.innerHTML = headerRow;
 
-                entries.forEach(row => {
+                data.forEach(row => {
                     let rowHtml = '<tr>';
-                    headers.forEach(header => {
-                        rowHtml += `<td>${row[header]['$t']}</td>`;
+                    Object.keys(row).forEach(header => {
+                        rowHtml += `<td>${row[header]}</td>`;
                     });
                     rowHtml += '</tr>';
                     table.innerHTML += rowHtml;
