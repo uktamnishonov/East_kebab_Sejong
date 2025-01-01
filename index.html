@@ -4,83 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Income & Inventory Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
         }
-
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
         header {
-            background-color: #333;
+            background-color: #2c3e50;
             color: white;
-            padding: 15px 0;
+            padding: 20px 0;
             text-align: center;
+            font-size: 2em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         nav {
-            background-color: #444;
-            overflow: hidden;
+            background-color: #34495e;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
         }
-
         nav a {
             color: white;
             padding: 14px 20px;
-            display: inline-block;
             text-decoration: none;
             text-align: center;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
         }
-
         nav a:hover {
-            background-color: #ddd;
-            color: black;
+            background-color: #2980b9;
         }
-
         .container {
             padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .tab-content {
+            display: none;
         }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
+        .active-tab {
+            display: block;
         }
-
-        th {
-            background-color: #f4f4f4;
-        }
-
         .loading {
             text-align: center;
             font-size: 18px;
             margin-top: 20px;
+            color: #7f8c8d;
         }
-
-        .tab-content {
-            display: none;
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .active-tab {
-            display: block;
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
         }
-
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ecf0f1;
+        }
         .error-message {
             color: red;
             text-align: center;
+            margin-top: 20px;
+        }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Income & Inventory Dashboard</h1>
+    Income & Inventory Dashboard
 </header>
 
 <nav>
@@ -111,11 +129,16 @@
     <div class="error-message" id="error-message"></div>
 </div>
 
+<footer>
+    &copy; 2025 Income & Inventory Dashboard. All rights reserved.
+</footer>
+
 <script>
+    // Change these URLs to your deployed Apps Script URL with the correct sheet names
     const sheetUrls = {
-        inventory: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Inventory",
-        log: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Log",
-        income: "https://script.google.com/macros/s/AKfycbxM7Yw8J4B7x4u9X-Dx7v5o9zTt0j1XqH5dM5o9s7W1E8l9sR4q/exec?sheet=Income"
+        inventory: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Inventory',
+        log: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Log',
+        income: 'https://script.google.com/macros/s/AKfycbw.../exec?sheet=Income'
     };
 
     function showTab(tabName) {
@@ -152,8 +175,10 @@
                     return;
                 }
 
+                const headers = Object.keys(data[0]);
+
                 let headerRow = '<tr>';
-                Object.keys(data[0]).forEach(header => {
+                headers.forEach(header => {
                     headerRow += `<th>${header}</th>`;
                 });
                 headerRow += '</tr>';
@@ -161,7 +186,7 @@
 
                 data.forEach(row => {
                     let rowHtml = '<tr>';
-                    Object.keys(row).forEach(header => {
+                    headers.forEach(header => {
                         rowHtml += `<td>${row[header]}</td>`;
                     });
                     rowHtml += '</tr>';
