@@ -3,146 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory & Income Management</title>
+    <title>Income & Inventory Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
+
         header {
-            background-color: #4CAF50;
+            background-color: #333;
             color: white;
+            padding: 15px 0;
             text-align: center;
-            padding: 10px 0;
         }
-        .tabs {
-            display: flex;
-            justify-content: center;
-            background-color: #333;
+
+        nav {
+            background-color: #444;
+            overflow: hidden;
         }
-        .tab {
-            padding: 14px 20px;
-            cursor: pointer;
+
+        nav a {
             color: white;
-            background-color: #333;
-            border: 1px solid #ddd;
+            padding: 14px 20px;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
         }
-        .tab:hover {
-            background-color: #575757;
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
         }
-        .tab.active {
-            background-color: #4CAF50;
-        }
-        .content {
-            display: none;
+
+        .container {
             padding: 20px;
-            margin: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .content.active {
-            display: block;
-        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        table, th, td {
+
+        th, td {
+            padding: 10px;
+            text-align: left;
             border: 1px solid #ddd;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #f4f4f4;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+
         .loading {
             text-align: center;
-            font-size: 20px;
-            color: #4CAF50;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .active-tab {
+            display: block;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Inventory & Income Management</h1>
+    <h1>Income & Inventory Dashboard</h1>
 </header>
 
-<div class="tabs">
-    <div class="tab active" onclick="showTab('income')">Income</div>
-    <div class="tab" onclick="showTab('inventory')">Inventory</div>
-    <div class="tab" onclick="showTab('log')">Log</div>
-</div>
+<nav>
+    <a href="javascript:void(0);" onclick="showTab('income')">Income</a>
+    <a href="javascript:void(0);" onclick="showTab('inventory')">Inventory</a>
+    <a href="javascript:void(0);" onclick="showTab('profit')">Profit</a>
+</nav>
 
-<div id="income" class="content active">
-    <h2>Income Overview</h2>
-    <div class="loading">Loading income data...</div>
-    <table id="incomeTable">
-        <!-- Income data will be dynamically inserted here -->
-    </table>
-</div>
+<div class="container">
+    <div id="income" class="tab-content">
+        <h2>Income Data</h2>
+        <div class="loading">Loading data...</div>
+        <table id="incomeTable"></table>
+    </div>
 
-<div id="inventory" class="content">
-    <h2>Inventory Overview</h2>
-    <div class="loading">Loading inventory data...</div>
-    <table id="inventoryTable">
-        <!-- Inventory data will be dynamically inserted here -->
-    </table>
-</div>
+    <div id="inventory" class="tab-content">
+        <h2>Inventory Data</h2>
+        <div class="loading">Loading data...</div>
+        <table id="inventoryTable"></table>
+    </div>
 
-<div id="log" class="content">
-    <h2>Log Overview</h2>
-    <div class="loading">Loading log data...</div>
-    <table id="logTable">
-        <!-- Log data will be dynamically inserted here -->
-    </table>
+    <div id="profit" class="tab-content">
+        <h2>Profit Data</h2>
+        <div class="loading">Loading data...</div>
+        <table id="profitTable"></table>
+    </div>
+
+    <div class="error-message" id="error-message"></div>
 </div>
 
 <script>
-    // This function will show the selected tab and hide the others
+    const apiUrl = "https://script.google.com/macros/s/AKfycbyRZz1HLg0maMFHfaeW7qEX1mVUoVVgH05Q51q7xh7Aq59nZqYxGwWZZLumuk2CmkAW/exec";
+
     function showTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        // Remove active class from all tabs
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        // Show the selected tab and mark the tab as active
-        document.getElementById(tabName).classList.add('active');
-        document.querySelector(`.tab:nth-child(${['income', 'inventory', 'log'].indexOf(tabName) + 1})`).classList.add('active');
-        
-        // Load the data for the selected tab
+        const tabs = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => tab.classList.remove('active-tab'));
+
+        const activeTab = document.getElementById(tabName);
+        activeTab.classList.add('active-tab');
+
         loadData(tabName);
     }
 
-    // Function to fetch and load data for the selected sheet
     function loadData(sheetName) {
-        fetch(`https://your-api-endpoint.com/${sheetName}`)
-            .then(response => response.json())
+        const table = document.getElementById(`${sheetName}Table`);
+        const loadingMessage = document.querySelector(`#${sheetName} .loading`);
+        const errorMessage = document.getElementById('error-message');
+        
+        loadingMessage.style.display = 'block';
+        errorMessage.innerHTML = '';  // Clear previous error messages
+        table.innerHTML = '';  // Clear previous table data
+
+        fetch(`${apiUrl}?sheetName=${sheetName}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
-                let table = document.getElementById(`${sheetName}Table`);
-                let loadingMessage = document.querySelector(`#${sheetName} .loading`);
                 loadingMessage.style.display = 'none'; // Hide loading message
-                
+
                 if (data.length === 0) {
                     table.innerHTML = '<tr><td colspan="5">No data available.</td></tr>';
                     return;
                 }
 
-                let headers = Object.keys(data[0]);
+                const headers = Object.keys(data[0]);
                 let headerRow = '<tr>';
                 headers.forEach(header => {
                     headerRow += `<th>${header}</th>`;
@@ -161,14 +167,13 @@
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                document.querySelector(`#${sheetName} .loading`).innerHTML = 'Failed to load data.';
+                loadingMessage.style.display = 'none'; // Hide loading message
+                errorMessage.innerHTML = 'Failed to load data. Please try again later.';
             });
     }
 
-    // Initially load the Income data when the page is loaded
-    window.onload = () => {
-        loadData('income');
-    };
+    // Show the income tab by default
+    showTab('income');
 </script>
 
 </body>
