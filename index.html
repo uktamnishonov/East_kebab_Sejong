@@ -112,7 +112,11 @@
 </div>
 
 <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbyRZz1HLg0maMFHfaeW7qEX1mVUoVVgH05Q51q7xh7Aq59nZqYxGwWZZLumuk2CmkAW/exec";
+    const sheetUrls = {
+        inventory: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od6/public/values?alt=json",
+        log: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od7/public/values?alt=json",
+        income: "https://spreadsheets.google.com/feeds/list/1JkpV9Kni5hbOwoOgsp9EiqvkeLEAdGf0UcAfSXjmHko/od8/public/values?alt=json"
+    };
 
     function showTab(tabName) {
         const tabs = document.querySelectorAll('.tab-content');
@@ -133,7 +137,7 @@
         errorMessage.innerHTML = '';  // Clear previous error messages
         table.innerHTML = '';  // Clear previous table data
 
-        fetch(`${apiUrl}?sheetName=${sheetName}`)
+        fetch(sheetUrls[sheetName])
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -143,12 +147,14 @@
             .then(data => {
                 loadingMessage.style.display = 'none'; // Hide loading message
 
-                if (data.length === 0) {
+                if (data.feed.entry.length === 0) {
                     table.innerHTML = '<tr><td colspan="5">No data available.</td></tr>';
                     return;
                 }
 
-                const headers = Object.keys(data[0]);
+                const entries = data.feed.entry;
+                const headers = Object.keys(entries[0]);
+
                 let headerRow = '<tr>';
                 headers.forEach(header => {
                     headerRow += `<th>${header}</th>`;
@@ -156,10 +162,10 @@
                 headerRow += '</tr>';
                 table.innerHTML = headerRow;
 
-                data.forEach(row => {
+                entries.forEach(row => {
                     let rowHtml = '<tr>';
                     headers.forEach(header => {
-                        rowHtml += `<td>${row[header]}</td>`;
+                        rowHtml += `<td>${row[header]['$t']}</td>`;
                     });
                     rowHtml += '</tr>';
                     table.innerHTML += rowHtml;
